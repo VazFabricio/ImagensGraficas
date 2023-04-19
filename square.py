@@ -54,17 +54,33 @@ glClearColor(0, 0.1, 0.1, 1)
 
 # Loop principal do programa
 while not glfw.window_should_close(window):
+
+    angle = 1
     # Verifica eventos de entrada
     glfw.poll_events()
 
     # Limpa o buffer de cor
     glClear(GL_COLOR_BUFFER_BIT)
 
-    # # Desenha o QUADRADO
+    # Cria uma matriz de rotação em torno do eixo z
+    rotation_matrix = np.array([
+        [np.cos(angle), -np.sin(angle), 0.0, 0.0],
+        [np.sin(angle), np.cos(angle), 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0]])
+
+    # Define a matriz de transformação a ser utilizada
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+    glMultMatrixf(rotation_matrix)
+
+    # Desenha o QUADRADO
     glDrawArrays(GL_QUADS, 0, 4)
+
+    # Incrementa o ângulo de rotação
+    angle += 0.01
 
     # Troca os buffers da janela
     glfw.swap_buffers(window)
-
 # Termina o GLFW
 glfw.terminate()
