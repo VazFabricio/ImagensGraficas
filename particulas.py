@@ -21,11 +21,12 @@ class Particle:
     def __init__(self, pos):
         self.pos = pos
         self.color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        self.radius = random.randint(10, 20)
+        self.size = random.randint(10, 20)
         self.velocity = [random.randint(-5, 5), random.randint(-5, 5)]
 
     def draw(self, screen):
-        pygame.draw.circle(screen, self.color, self.pos, self.radius)
+        rect = pygame.Rect(self.pos[0], self.pos[1], self.size, self.size)
+        pygame.draw.rect(screen, self.color, rect)
 
     def update(self):
         self.pos[0] += self.velocity[0]
