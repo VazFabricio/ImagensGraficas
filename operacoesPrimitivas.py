@@ -41,7 +41,8 @@ while True:
     # Desenha um quadrado na posição (0,0,0)
     draw_square()
 
-    glRotatef(45, 1, 1, 0)
+    glTranslatef(0.2, 1, 0)
+    glRotatef(60, 1, 0, 0)
     draw_square()
 
     pygame.display.flip()
