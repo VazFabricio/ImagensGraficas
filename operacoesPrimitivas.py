@@ -12,6 +12,13 @@ gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
 
 
 # Função para desenhar um quadrado
+
+def draw_origem():
+    glBegin(GL_POINTS)
+    glColor3f(1.0, 0.0, 0.0)
+    glVertex2i(0, 0)
+    glEnd()
+
 def draw_square():
     glBegin(GL_QUADS)
     glVertex3f(0, 0, 0.0)
@@ -38,11 +45,13 @@ while True:
     gluLookAt(0, 0, 3, 0, 0, 0, 0, 1, 0)
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-    # Desenha um quadrado na posição (0,0,0)
+
+
     draw_square()
 
     glTranslatef(0.2, 1, 0)
-    glRotatef(60, 1, 0, 0)
+    glRotatef(45, 0, 0, -1)
+    glScalef(-1, 1, 1)
     draw_square()
 
     pygame.display.flip()
