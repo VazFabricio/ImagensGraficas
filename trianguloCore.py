@@ -30,7 +30,7 @@ if not glfw.init():
     raise Exception("glfw can not be initialized!")
 
 # criar a janela glfw
-window = glfw.create_window(1280, 720, "My OpenGL window", None, None)
+window = glfw.create_window(720, 480, "My OpenGL window", None, None)
 
 # checagem se foi de fato criada
 if not window:
@@ -51,7 +51,7 @@ vertices = np.array(vertices, dtype=np.float32)
 
 shader = compileProgram(compileShader(vertex_src, GL_VERTEX_SHADER), compileShader(fragment_src, GL_FRAGMENT_SHADER))
 
-VBO = glGenBuffers(1)
+VBO = glGenBuffers(1) #permite leitura rápida
 glBindBuffer(GL_ARRAY_BUFFER, VBO)
 glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
 
