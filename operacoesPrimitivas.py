@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-import numpy as np
+
 
 pygame.init()
 display = (640, 480)
@@ -10,14 +10,6 @@ pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
 gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
 
-
-# Função para desenhar um quadrado
-
-def draw_origem():
-    glBegin(GL_POINTS)
-    glColor3f(1.0, 0.0, 0.0)
-    glVertex2i(0, 0)
-    glEnd()
 
 def draw_square():
     glBegin(GL_QUADS)
@@ -38,14 +30,19 @@ while True:
 
     # Configura a matriz MVP
     glMatrixMode(GL_PROJECTION)
+    """Matriz de Projeção: É usada para projetar objetos em um espaço tridimensional
+        em uma tela bidimensional. A matriz de projeção define a perspectiva da cena e
+        pode ser definida no OpenGL usando a função"""
     glLoadIdentity()
     gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
     glMatrixMode(GL_MODELVIEW)
+    """É usada para transformar objetos em um espaço de coordenadas
+        de mundo para um espaço de coordenadas de visão. Isso inclui a rotação, escala e
+        translação do objeto em relação ao observador."""
     glLoadIdentity()
     gluLookAt(0, 0, 3, 0, 0, 0, 0, 1, 0)
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-
 
     draw_square()
 
