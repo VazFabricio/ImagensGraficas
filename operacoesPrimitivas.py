@@ -3,7 +3,6 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-
 pygame.init()
 display = (640, 480)
 pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
@@ -21,6 +20,7 @@ def draw_square():
 
 
 while True:
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -30,25 +30,32 @@ while True:
 
     # Configura a matriz MVP
     glMatrixMode(GL_PROJECTION)
-    """Matriz de Projeção: É usada para projetar objetos em um espaço tridimensional
-        em uma tela bidimensional. A matriz de projeção define a perspectiva da cena e
-        pode ser definida no OpenGL usando a função"""
     glLoadIdentity()
     gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
     glMatrixMode(GL_MODELVIEW)
-    """É usada para transformar objetos em um espaço de coordenadas
-        de mundo para um espaço de coordenadas de visão. Isso inclui a rotação, escala e
-        translação do objeto em relação ao observador."""
     glLoadIdentity()
     gluLookAt(0, 0, 3, 0, 0, 0, 0, 1, 0)
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
-    draw_square()
+    draw_square()  # ombro
 
     glTranslatef(0.2, 1, 0)
-    glRotatef(45, 0, 0, -1)
-    glScalef(-1, 1, 1)
+    glRotatef(-45, 0, 0, 1)
+    glTranslatef(-0.2, 0, 0)
+    draw_square()  # braco
+
+    glTranslatef(-0.1, 1, 0)
+    glScalef(2, 0.05, 0)
+    draw_square()  # mao
+
+    glTranslatef(0, 1, 0)
+    glScalef(0.1, 4, 0)
+    glRotatef(-30, 0, 0, 1)
+    draw_square()  # dedo1
+
+    glTranslatef(1.5, 1.3, 0)
+    glRotatef(135, 0, 0, 1)
     draw_square()
 
     pygame.display.flip()
