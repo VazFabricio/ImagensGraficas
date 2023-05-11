@@ -96,9 +96,6 @@ while True:
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
-    glPushMatrix()
-    generate_rectangle()
-    glPopMatrix()
 
     draw_square()
 
