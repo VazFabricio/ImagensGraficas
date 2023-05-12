@@ -15,6 +15,21 @@ gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
 x = 0.0
 y = 0.0
 
+rand_rec_x = 2
+rand_rec_y = 2
+
+moving_left = False
+moving_right = False
+moving_up = False
+moving_down = False
+
+collision_detected = False
+number_of_collision = 0
+
+
+back_red = 0.0
+back_green = 1.0
+back_blue = 0.0
 
 def draw_square():
     glBegin(GL_QUADS)
@@ -25,16 +40,12 @@ def draw_square():
     glEnd()
 
 
-rand_x = 2
-rand_y = 2
-
-
 def draw_rectangle():
     glBegin(GL_QUADS)
-    glVertex3f(rand_x, rand_y, 0.0)
-    glVertex3f(rand_x + 1, rand_y, 0.0)
-    glVertex3f(rand_x + 1, rand_y + 0.2, 0.0)
-    glVertex3f(rand_x + 0, rand_y + 0.2, 0.0)
+    glVertex3f(rand_rec_x, rand_rec_y, 0.0)
+    glVertex3f(rand_rec_x + 1, rand_rec_y, 0.0)
+    glVertex3f(rand_rec_x + 1, rand_rec_y + 0.2, 0.0)
+    glVertex3f(rand_rec_x + 0, rand_rec_y + 0.2, 0.0)
     glEnd()
 
 
@@ -44,10 +55,10 @@ def check_collision():
     square_top = y + 0.5
     square_bottom = y
 
-    rect_left = rand_x
-    rect_right = rand_x + 1
-    rect_top = rand_y + 0.2
-    rect_bottom = rand_y
+    rect_left = rand_rec_x
+    rect_right = rand_rec_x + 1
+    rect_top = rand_rec_y + 0.2
+    rect_bottom = rand_rec_y
 
     if square_left < rect_right and square_right > rect_left and square_bottom < rect_top and square_top > rect_bottom:
         return True
@@ -55,14 +66,11 @@ def check_collision():
         return False
 
 
-moving_left = False
-moving_right = False
-moving_up = False
-moving_down = False
 
-collision_detected = False
 
 while True:
+
+    glClearColor(back_red, back_green, back_blue, 1)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -96,10 +104,10 @@ while True:
     if moving_down and y > -2.5:
         y -= 0.05
 
-    rand_y -= 0.05
-    if rand_y <= -2.0:
-        rand_y = random.randrange(4, 5)
-        rand_x = random.randrange(-4, 4)
+    rand_rec_y -= 0.05
+    if rand_rec_y <= -2.0:
+        rand_rec_y = random.randrange(4, 5)
+        rand_rec_x = random.randrange(-4, 4)
         collision_detected = False
 
 
@@ -121,6 +129,11 @@ while True:
     if not collision_detected and check_collision():
         print("Colisão detectada!")
         collision_detected = True
+        back_red += 0.1
+        back_green -= 0.1
+        number_of_collision += 1
+        if number_of_collision == 10:
+            quit()
 
     pygame.display.flip()
     pygame.time.wait(10)
