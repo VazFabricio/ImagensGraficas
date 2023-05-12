@@ -38,14 +38,29 @@ def draw_rectangle():
     glEnd()
 
 
-def get_positions():
-    return (x, y), (rand_x, rand_y)
+def check_collision():
+    square_left = x
+    square_right = x + 0.5
+    square_top = y + 0.5
+    square_bottom = y
+
+    rect_left = rand_x
+    rect_right = rand_x + 1
+    rect_top = rand_y + 0.2
+    rect_bottom = rand_y
+
+    if square_left < rect_right and square_right > rect_left and square_bottom < rect_top and square_top > rect_bottom:
+        return True
+    else:
+        return False
 
 
 moving_left = False
 moving_right = False
 moving_up = False
 moving_down = False
+
+collision_detected = False
 
 while True:
 
@@ -85,10 +100,9 @@ while True:
     if rand_y <= -2.0:
         rand_y = random.randrange(4, 5)
         rand_x = random.randrange(-4, 4)
+        collision_detected = False
 
-    quad_pos, rect_pos = get_positions()
 
-    print(quad_pos)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -103,6 +117,10 @@ while True:
     draw_square()
 
     draw_rectangle()
+
+    if not collision_detected and check_collision():
+        print("Colisão detectada!")
+        collision_detected = True
 
     pygame.display.flip()
     pygame.time.wait(10)
