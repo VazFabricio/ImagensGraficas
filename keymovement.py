@@ -10,13 +10,8 @@ pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
 gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
 
-# Coordenadas do quadrado
 x = 0.0
 y = 0.0
-
-# Coordernadas do retangulo
-rect_x = 0.0
-rect_y = 0.0
 
 
 def draw_square():
@@ -28,22 +23,25 @@ def draw_square():
     glEnd()
 
 
+rand_x = 0
+rand_y = 0
+
+
 def draw_rectangle():
     glBegin(GL_QUADS)
-    glVertex3f(0, 0, 0.0)
-    glVertex3f(1, 0, 0.0)
-    glVertex3f(1, 0.2, 0.0)
-    glVertex3f(0, 0.2, 0.0)
+    glVertex3f(0, rand_y, 0.0)
+    glVertex3f(1, rand_y, 0.0)
+    glVertex3f(1, rand_y+0.2, 0.0)
+    glVertex3f(0, rand_y+0.2, 0.0)
     glEnd()
 
 
-def generate_rectangle():
-    rect_y = 0.0
-    rect_x_pos = random.uniform(-3.0, 3.0)
-    rect_y_pos = random.uniform(-2.0, 2.0)
-    glTranslatef(rect_x_pos, rect_y_pos, 0.0)
-    rect_y -= 0.01
+def movement():
+    rand_y = random.randrange(-3, 3)
+    glTranslatef(0, rand_y, 0)
     draw_rectangle()
+
+
 
 moving_left = False
 moving_right = False
@@ -84,6 +82,9 @@ while True:
     if moving_down and y > -2.5:
         y -= 0.05
 
+    rand_y -= 0.05
+
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     # Configura a matriz MVP
@@ -96,8 +97,9 @@ while True:
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
-
     draw_square()
+
+    draw_rectangle()
 
     pygame.display.flip()
     pygame.time.wait(10)
