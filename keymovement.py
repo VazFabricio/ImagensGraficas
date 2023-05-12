@@ -8,6 +8,8 @@ pygame.init()
 display = (720, 480)
 pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
+image = pygame.image.load("nave.png")
+
 gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
 
 x = 0.0
@@ -23,24 +25,21 @@ def draw_square():
     glEnd()
 
 
-rand_x = 0
-rand_y = 0
+rand_x = 2
+rand_y = 2
 
 
 def draw_rectangle():
     glBegin(GL_QUADS)
-    glVertex3f(0, rand_y, 0.0)
-    glVertex3f(1, rand_y, 0.0)
-    glVertex3f(1, rand_y+0.2, 0.0)
-    glVertex3f(0, rand_y+0.2, 0.0)
+    glVertex3f(rand_x, rand_y, 0.0)
+    glVertex3f(rand_x + 1, rand_y, 0.0)
+    glVertex3f(rand_x + 1, rand_y + 0.2, 0.0)
+    glVertex3f(rand_x + 0, rand_y + 0.2, 0.0)
     glEnd()
 
 
-def movement():
-    rand_y = random.randrange(-3, 3)
-    glTranslatef(0, rand_y, 0)
-    draw_rectangle()
-
+def get_positions():
+    return (x, y), (rand_x, rand_y)
 
 
 moving_left = False
@@ -83,7 +82,13 @@ while True:
         y -= 0.05
 
     rand_y -= 0.05
+    if rand_y <= -2.0:
+        rand_y = random.randrange(4, 5)
+        rand_x = random.randrange(-4, 4)
 
+    quad_pos, rect_pos = get_positions()
+
+    print(quad_pos)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -94,8 +99,6 @@ while True:
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
     gluLookAt(0, 0, 3, 0, 0, 0, 0, 1, 0)
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
     draw_square()
 
