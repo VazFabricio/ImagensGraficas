@@ -35,20 +35,35 @@ random_positions = [2, 2, 2, 2]
 speed = 0.06
 
 # Carrega a imagem com canal alfa
-image_surface = pygame.image.load("nave.png").convert_alpha()
-image_surface = pygame.transform.scale(image_surface, (50, 50))
-image_data = pygame.image.tostring(image_surface, "RGBA", True)
+image_surface_square = pygame.image.load("nave.png").convert_alpha()
+image_surface_square = pygame.transform.scale(image_surface_square, (50, 50))
+image_data_square = pygame.image.tostring(image_surface_square, "RGBA", True)
 
-# Cria a textura OpenGL com canal alfa
-texture = glGenTextures(1)
-glBindTexture(GL_TEXTURE_2D, texture)
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_surface.get_width(), image_surface.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data)
+# Cria a textura OpenGL com canal alfa para o quadrado
+texture_square = glGenTextures(1)
+glBindTexture(GL_TEXTURE_2D, texture_square)
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_surface_square.get_width(), image_surface_square.get_height(), 0, GL_RGBA,
+             GL_UNSIGNED_BYTE, image_data_square)
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
+# Carrega a imagem com canal alfa para os retângulos
+image_surface_rectangle = pygame.image.load("plataforma.png").convert_alpha()
+image_surface_rectangle = pygame.transform.scale(image_surface_rectangle, (100, 20))
+image_data_rectangle = pygame.image.tostring(image_surface_rectangle, "RGBA", True)
+
+# Cria a textura OpenGL com canal alfa para os retângulos
+texture_rectangle = glGenTextures(1)
+glBindTexture(GL_TEXTURE_2D, texture_rectangle)
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_surface_rectangle.get_width(), image_surface_rectangle.get_height(),
+             0, GL_RGBA, GL_UNSIGNED_BYTE, image_data_rectangle)
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+
+
 def draw_square():
     glEnable(GL_TEXTURE_2D)
-    glBindTexture(GL_TEXTURE_2D, texture)
+    glBindTexture(GL_TEXTURE_2D, texture_square)
     glBegin(GL_QUADS)
     glTexCoord2f(0, 0)
     glVertex3f(x, y, 0.0)
@@ -62,14 +77,16 @@ def draw_square():
     glDisable(GL_TEXTURE_2D)
 
 
-
 def draw_rectangle(pos_x, pos_y):
+    glEnable(GL_TEXTURE_2D)
+    glBindTexture(GL_TEXTURE_2D, texture_rectangle)
     glBegin(GL_QUADS)
     glVertex3f(pos_x, pos_y, 0.0)
     glVertex3f(pos_x + 1, pos_y, 0.0)
     glVertex3f(pos_x + 1, pos_y + 0.2, 0.0)
     glVertex3f(pos_x, pos_y + 0.2, 0.0)
     glEnd()
+    glDisable(GL_TEXTURE_2D)
 
 
 def check_collision():
@@ -89,13 +106,12 @@ def check_collision():
     rect2_bottom = random_positions[3]
 
     if (square_right >= rect1_left and square_left <= rect1_right and
-            square_bottom <= rect1_top and square_top >= rect1_bottom) or \
+        square_bottom <= rect1_top and square_top >= rect1_bottom) or \
             (square_right >= rect2_left and square_left <= rect2_right and
              square_bottom <= rect2_top and square_top >= rect2_bottom):
         return True
     else:
         return False
-
 
 
 while True:
@@ -136,12 +152,12 @@ while True:
 
     random_positions[1] -= speed
     random_positions[3] -= speed
-    if random_positions[1] <= -2.0:
+    if random_positions[1] <= -3.0:
         random_positions[1] = random.randrange(4, 5)
         random_positions[0] = random.randrange(-4, 4)
         collision_detected = False
 
-    if random_positions[3] <= -2.0:
+    if random_positions[3] <= -3.0:
         random_positions[3] = random.randrange(4, 5)
         random_positions[2] = random.randrange(-4, 4)
         collision_detected = False
@@ -171,7 +187,6 @@ while True:
         speed += 0.005
         if number_of_collision == 10:
             quit()
-
 
     pygame.display.flip()
     pygame.time.wait(10)
