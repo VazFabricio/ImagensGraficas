@@ -8,8 +8,6 @@ pygame.init()
 display = (720, 480)
 pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
-image = pygame.image.load("nave.png")
-
 gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
 
 x = 0.0
@@ -26,10 +24,12 @@ moving_down = False
 collision_detected = False
 number_of_collision = 0
 
-
 back_red = 0.0
 back_green = 1.0
 back_blue = 0.0
+
+random_positions = [2, 2, 2, 2]
+
 
 def draw_square():
     glBegin(GL_QUADS)
@@ -40,13 +40,14 @@ def draw_square():
     glEnd()
 
 
-def draw_rectangle():
+def draw_rectangle(pos_x, pos_y):
     glBegin(GL_QUADS)
-    glVertex3f(rand_rec_x, rand_rec_y, 0.0)
-    glVertex3f(rand_rec_x + 1, rand_rec_y, 0.0)
-    glVertex3f(rand_rec_x + 1, rand_rec_y + 0.2, 0.0)
-    glVertex3f(rand_rec_x + 0, rand_rec_y + 0.2, 0.0)
+    glVertex3f(pos_x, pos_y, 0.0)
+    glVertex3f(pos_x + 1, pos_y, 0.0)
+    glVertex3f(pos_x + 1, pos_y + 0.2, 0.0)
+    glVertex3f(pos_x, pos_y + 0.2, 0.0)
     glEnd()
+
 
 
 def check_collision():
@@ -55,16 +56,15 @@ def check_collision():
     square_top = y + 0.5
     square_bottom = y
 
-    rect_left = rand_rec_x
-    rect_right = rand_rec_x + 1
-    rect_top = rand_rec_y + 0.2
-    rect_bottom = rand_rec_y
+    rect_left = random_positions[0]
+    rect_right = random_positions[0] + 1
+    rect_top = random_positions[1] + 0.2
+    rect_bottom = random_positions[1]
 
     if square_left < rect_right and square_right > rect_left and square_bottom < rect_top and square_top > rect_bottom:
         return True
     else:
         return False
-
 
 
 
@@ -104,13 +104,17 @@ while True:
     if moving_down and y > -2.5:
         y -= 0.05
 
-    rand_rec_y -= 0.05
-    if rand_rec_y <= -2.0:
-        rand_rec_y = random.randrange(4, 5)
-        rand_rec_x = random.randrange(-4, 4)
+    random_positions[1] -= 0.05
+    random_positions[3] -= 0.05
+    if random_positions[1] <= -2.0:
+        random_positions[1] = random.randrange(4, 5)
+        random_positions[0] = random.randrange(-4, 4)
         collision_detected = False
 
-
+    if random_positions[3] <= -2.0:
+        random_positions[2] = random.randrange(1, 5)
+        random_positions[3] = random.randrange(-10, 4)
+        collision_detected = False
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -124,7 +128,9 @@ while True:
 
     draw_square()
 
-    draw_rectangle()
+    draw_rectangle(random_positions[0], random_positions[1])
+
+    draw_rectangle(random_positions[2], random_positions[3])
 
     if not collision_detected and check_collision():
         print("Colisão detectada!")
