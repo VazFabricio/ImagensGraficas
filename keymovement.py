@@ -119,8 +119,8 @@ while True:
         collision_detected = False
 
     if random_positions[3] <= -2.0:
-        random_positions[2] = random.randrange(1, 5)
-        random_positions[3] = random.randrange(-10, 4)
+        random_positions[3] = random.randrange(4, 5)
+        random_positions[2] = random.randrange(-4, 4)
         collision_detected = False
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
