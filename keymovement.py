@@ -7,6 +7,8 @@ import random
 pygame.init()
 display = (720, 480)
 pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+glEnable(GL_BLEND)
+glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
 
@@ -30,14 +32,35 @@ back_blue = 0.0
 
 random_positions = [2, 2, 2, 2]
 
+speed = 0.06
+
+# Carrega a imagem com canal alfa
+image_surface = pygame.image.load("nave.png").convert_alpha()
+image_surface = pygame.transform.scale(image_surface, (50, 50))
+image_data = pygame.image.tostring(image_surface, "RGBA", True)
+
+# Cria a textura OpenGL com canal alfa
+texture = glGenTextures(1)
+glBindTexture(GL_TEXTURE_2D, texture)
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_surface.get_width(), image_surface.get_height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data)
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
 def draw_square():
+    glEnable(GL_TEXTURE_2D)
+    glBindTexture(GL_TEXTURE_2D, texture)
     glBegin(GL_QUADS)
+    glTexCoord2f(0, 0)
     glVertex3f(x, y, 0.0)
+    glTexCoord2f(1, 0)
     glVertex3f(x + 0.5, y, 0.0)
+    glTexCoord2f(1, 1)
     glVertex3f(x + 0.5, y + 0.5, 0.0)
+    glTexCoord2f(0, 1)
     glVertex3f(x, y + 0.5, 0.0)
     glEnd()
+    glDisable(GL_TEXTURE_2D)
+
 
 
 def draw_rectangle(pos_x, pos_y):
@@ -111,8 +134,8 @@ while True:
     if moving_down and y > -2.5:
         y -= 0.05
 
-    random_positions[1] -= 0.05
-    random_positions[3] -= 0.05
+    random_positions[1] -= speed
+    random_positions[3] -= speed
     if random_positions[1] <= -2.0:
         random_positions[1] = random.randrange(4, 5)
         random_positions[0] = random.randrange(-4, 4)
@@ -145,8 +168,10 @@ while True:
         back_red += 0.1
         back_green -= 0.1
         number_of_collision += 1
+        speed += 0.005
         if number_of_collision == 10:
             quit()
+
 
     pygame.display.flip()
     pygame.time.wait(10)
