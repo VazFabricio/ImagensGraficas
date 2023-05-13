@@ -49,19 +49,26 @@ def draw_rectangle(pos_x, pos_y):
     glEnd()
 
 
-
 def check_collision():
     square_left = x
     square_right = x + 0.5
     square_top = y + 0.5
     square_bottom = y
 
-    rect_left = random_positions[0]
-    rect_right = random_positions[0] + 1
-    rect_top = random_positions[1] + 0.2
-    rect_bottom = random_positions[1]
+    rect1_left = random_positions[0]
+    rect1_right = random_positions[0] + 1
+    rect1_top = random_positions[1] + 0.2
+    rect1_bottom = random_positions[1]
 
-    if square_left < rect_right and square_right > rect_left and square_bottom < rect_top and square_top > rect_bottom:
+    rect2_left = random_positions[2]
+    rect2_right = random_positions[2] + 1
+    rect2_top = random_positions[3] + 0.2
+    rect2_bottom = random_positions[3]
+
+    if (square_right >= rect1_left and square_left <= rect1_right and
+            square_bottom <= rect1_top and square_top >= rect1_bottom) or \
+            (square_right >= rect2_left and square_left <= rect2_right and
+             square_bottom <= rect2_top and square_top >= rect2_bottom):
         return True
     else:
         return False
