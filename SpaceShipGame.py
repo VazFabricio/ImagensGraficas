@@ -1,54 +1,21 @@
 import random
-from constants import *
 from screen import *
+from images import *
 
 pygame.init()
 
 screen_config_start()
 
-# Carrega a imagem com canal alfa
-image_surface_square = pygame.image.load("nave.png").convert_alpha()
-image_surface_square = pygame.transform.scale(image_surface_square, (50, 50))
-image_data_square = pygame.image.tostring(image_surface_square, "RGBA", True)
+texture_square = load_texture("nave.png", (50, 50))
 
-# Cria a textura para o quadrado
-texture_square = glGenTextures(1)
-glBindTexture(GL_TEXTURE_2D, texture_square)
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_surface_square.get_width(), image_surface_square.get_height(), 0, GL_RGBA,
-             GL_UNSIGNED_BYTE, image_data_square)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+texture_rectangle = load_texture("plataforma.png", (0.2, 0.2))
 
-# Carrega a imagem para os retângulos
-image_surface_rectangle = pygame.image.load("plataforma.png").convert_alpha()
-image_surface_rectangle = pygame.transform.scale(image_surface_rectangle, (0.2, 0.2))
-image_data_rectangle = pygame.image.tostring(image_surface_rectangle, "RGBA", True)
-
-# Cria a textura para os retângulos
-texture_rectangle = glGenTextures(1)
-glBindTexture(GL_TEXTURE_2D, texture_rectangle)
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_surface_rectangle.get_width(), image_surface_rectangle.get_height(),
-             0, GL_RGBA, GL_UNSIGNED_BYTE, image_data_rectangle)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-
-# Carrega a imagem de fundo
-background_image = pygame.image.load("fundo2.png").convert_alpha()
-background_image = pygame.transform.scale(background_image, DISPLAY)
-background_data = pygame.image.tostring(background_image, "RGBA", True)
-
-# Cria a textura para a imagem de fundo
-texture_background = glGenTextures(1)
-glBindTexture(GL_TEXTURE_2D, texture_background)
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, background_image.get_width(), background_image.get_height(), 0, GL_RGBA,
-             GL_UNSIGNED_BYTE, background_data)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+texture_background = load_texture("fundo2.png", DISPLAY)
 
 
-def draw_background():
+def draw_background(texture_id):
     glEnable(GL_TEXTURE_2D)
-    glBindTexture(GL_TEXTURE_2D, texture_background)
+    glBindTexture(GL_TEXTURE_2D, texture_id)
     glBegin(GL_QUADS)
     glTexCoord2f(0, 0)
     glVertex3f(-5, -4, 0)
@@ -62,9 +29,9 @@ def draw_background():
     glDisable(GL_TEXTURE_2D)
 
 
-def draw_square():
+def draw_square(texture_id):
     glEnable(GL_TEXTURE_2D)
-    glBindTexture(GL_TEXTURE_2D, texture_square)
+    glBindTexture(GL_TEXTURE_2D, texture_id)
     glBegin(GL_QUADS)
     glTexCoord2f(0, 0)
     glVertex3f(X_SHIP, Y_SHIP, 0.0)
@@ -78,9 +45,9 @@ def draw_square():
     glDisable(GL_TEXTURE_2D)
 
 
-def draw_rectangle(pos_x, pos_y):
+def draw_rectangle(pos_x, pos_y, texture_id):
     glEnable(GL_TEXTURE_2D)
-    glBindTexture(GL_TEXTURE_2D, texture_rectangle)
+    glBindTexture(GL_TEXTURE_2D, texture_id)
     glBegin(GL_QUADS)
     glVertex3f(pos_x, pos_y, 0.0)
     glVertex3f(pos_x + 1, pos_y, 0.0)
@@ -169,13 +136,13 @@ while True:
     # Configura a matriz MVP
     projection_matrix()
 
-    draw_background()
+    draw_background(texture_background)
 
-    draw_square()
+    draw_square(texture_square)
 
-    draw_rectangle(RANDOM_POSITIONS[0], RANDOM_POSITIONS[1])
+    draw_rectangle(RANDOM_POSITIONS[0], RANDOM_POSITIONS[1], texture_rectangle)
 
-    draw_rectangle(RANDOM_POSITIONS[2], RANDOM_POSITIONS[3])
+    draw_rectangle(RANDOM_POSITIONS[2], RANDOM_POSITIONS[3], texture_rectangle)
 
     if not COLLISION_DETECTED and check_collision():
         print("Colisão detectada!")
