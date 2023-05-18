@@ -1,38 +1,10 @@
-import pygame
-from pygame.locals import *
-from OpenGL.GL import *
-from OpenGL.GLU import *
 import random
+from constants import *
+from screen import *
 
 pygame.init()
-display = (720, 480)
-pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
-glEnable(GL_BLEND)
-glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
-
-x = 0.0
-y = 0.0
-
-rand_rec_x = 2
-rand_rec_y = 2
-
-moving_left = False
-moving_right = False
-moving_up = False
-moving_down = False
-
-collision_detected = False
-number_of_collision = 0
-
-back_red = 0.0
-back_green = 1.0
-back_blue = 0.0
-
-random_positions = [2, 2, 2, 2]
-
-speed = 0.06
+screen_config_start()
 
 # Carrega a imagem com canal alfa
 image_surface_square = pygame.image.load("nave.png").convert_alpha()
@@ -60,10 +32,9 @@ glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_surface_rectangle.get_width(), ima
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
-
 # Carrega a imagem de fundo
 background_image = pygame.image.load("fundo2.png").convert_alpha()
-background_image = pygame.transform.scale(background_image, display)
+background_image = pygame.transform.scale(background_image, DISPLAY)
 background_data = pygame.image.tostring(background_image, "RGBA", True)
 
 # Cria a textura para a imagem de fundo
@@ -73,6 +44,7 @@ glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, background_image.get_width(), background
              GL_UNSIGNED_BYTE, background_data)
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+
 
 def draw_background():
     glEnable(GL_TEXTURE_2D)
@@ -95,13 +67,13 @@ def draw_square():
     glBindTexture(GL_TEXTURE_2D, texture_square)
     glBegin(GL_QUADS)
     glTexCoord2f(0, 0)
-    glVertex3f(x, y, 0.0)
+    glVertex3f(X_SHIP, Y_SHIP, 0.0)
     glTexCoord2f(1, 0)
-    glVertex3f(x + 0.5, y, 0.0)
+    glVertex3f(X_SHIP + 0.5, Y_SHIP, 0.0)
     glTexCoord2f(1, 1)
-    glVertex3f(x + 0.5, y + 0.5, 0.0)
+    glVertex3f(X_SHIP + 0.5, Y_SHIP + 0.5, 0.0)
     glTexCoord2f(0, 1)
-    glVertex3f(x, y + 0.5, 0.0)
+    glVertex3f(X_SHIP, Y_SHIP + 0.5, 0.0)
     glEnd()
     glDisable(GL_TEXTURE_2D)
 
@@ -119,20 +91,20 @@ def draw_rectangle(pos_x, pos_y):
 
 
 def check_collision():
-    square_left = x
-    square_right = x + 0.5
-    square_top = y + 0.5
-    square_bottom = y
+    square_left = X_SHIP
+    square_right = X_SHIP + 0.5
+    square_top = Y_SHIP + 0.5
+    square_bottom = Y_SHIP
 
-    rect1_left = random_positions[0]
-    rect1_right = random_positions[0] + 1
-    rect1_top = random_positions[1] + 0.2
-    rect1_bottom = random_positions[1]
+    rect1_left = RANDOM_POSITIONS[0]
+    rect1_right = RANDOM_POSITIONS[0] + 1
+    rect1_top = RANDOM_POSITIONS[1] + 0.2
+    rect1_bottom = RANDOM_POSITIONS[1]
 
-    rect2_left = random_positions[2]
-    rect2_right = random_positions[2] + 1
-    rect2_top = random_positions[3] + 0.2
-    rect2_bottom = random_positions[3]
+    rect2_left = RANDOM_POSITIONS[2]
+    rect2_right = RANDOM_POSITIONS[2] + 1
+    rect2_top = RANDOM_POSITIONS[3] + 0.2
+    rect2_bottom = RANDOM_POSITIONS[3]
 
     if (square_right >= rect1_left and square_left <= rect1_right and
         square_bottom <= rect1_top and square_top >= rect1_bottom) or \
@@ -145,7 +117,7 @@ def check_collision():
 
 while True:
 
-    glClearColor(back_red, back_green, back_blue, 1)
+    glClearColor(BACK_RED, BACK_GREEN, BACK_BLUE, 1)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -153,70 +125,66 @@ while True:
             quit()
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                moving_left = True
+                MOVING_LEFT = True
             elif event.key == pygame.K_RIGHT:
-                moving_right = True
+                MOVING_RIGHT = True
             elif event.key == pygame.K_UP:
-                moving_up = True
+                MOVING_UP = True
             elif event.key == pygame.K_DOWN:
-                moving_down = True
+                MOVING_DOWN = True
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
-                moving_left = False
+                MOVING_LEFT = False
             elif event.key == pygame.K_RIGHT:
-                moving_right = False
+                MOVING_RIGHT = False
             elif event.key == pygame.K_UP:
-                moving_up = False
+                MOVING_UP = False
             elif event.key == pygame.K_DOWN:
-                moving_down = False
+                MOVING_DOWN = False
 
-    if moving_left and x > -4:
-        x -= 0.05
-    if moving_right and x < 3.5:
-        x += 0.05
-    if moving_up and y < 2:
-        y += 0.05
-    if moving_down and y > -2.5:
-        y -= 0.05
+    if MOVING_LEFT and X_SHIP > -4:
+        X_SHIP -= 0.05
+    if MOVING_RIGHT and X_SHIP < 3.5:
+        X_SHIP += 0.05
+    if MOVING_UP and Y_SHIP < 2:
+        Y_SHIP += 0.05
+    if MOVING_DOWN and Y_SHIP > -2.5:
+        Y_SHIP -= 0.05
 
-    random_positions[1] -= speed
-    random_positions[3] -= speed
-    if random_positions[1] <= -3.0:
-        random_positions[1] = random.randrange(4, 5)
-        random_positions[0] = random.randrange(-4, 4)
-        collision_detected = False
+    RANDOM_POSITIONS[1] -= SPEED
+    RANDOM_POSITIONS[3] -= SPEED
 
-    if random_positions[3] <= -3.0:
-        random_positions[3] = random.randrange(4, 5)
-        random_positions[2] = random.randrange(-4, 4)
-        collision_detected = False
+    if RANDOM_POSITIONS[1] <= -3.0:
+        RANDOM_POSITIONS[1] = random.randrange(4, 5)
+        RANDOM_POSITIONS[0] = random.randrange(-4, 4)
+        COLLISION_DETECTED = False
+
+    if RANDOM_POSITIONS[3] <= -3.0:
+        RANDOM_POSITIONS[3] = random.randrange(4, 5)
+        RANDOM_POSITIONS[2] = random.randrange(-4, 4)
+        COLLISION_DETECTED = False
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     # Configura a matriz MVP
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    gluPerspective(90, (display[0] / display[1]), 0.1, 50.0)
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    gluLookAt(0, 0, 3, 0, 0, 0, 0, 1, 0)
+    projection_matrix()
 
     draw_background()
 
     draw_square()
 
-    draw_rectangle(random_positions[0], random_positions[1])
+    draw_rectangle(RANDOM_POSITIONS[0], RANDOM_POSITIONS[1])
 
-    draw_rectangle(random_positions[2], random_positions[3])
+    draw_rectangle(RANDOM_POSITIONS[2], RANDOM_POSITIONS[3])
 
-    if not collision_detected and check_collision():
+    if not COLLISION_DETECTED and check_collision():
         print("Colisão detectada!")
-        collision_detected = True
-        back_red += 0.1
-        back_green -= 0.1
-        number_of_collision += 1
-        speed += 0.005
-        if number_of_collision == 10:
+        COLLISION_DETECTED = True
+        BACK_RED += 0.1
+        BACK_GREEN -= 0.1
+        NUMBER_OF_COLLISIONS += 1
+        SPEED += 0.005
+        if NUMBER_OF_COLLISIONS == 10:
             quit()
 
     pygame.display.flip()
